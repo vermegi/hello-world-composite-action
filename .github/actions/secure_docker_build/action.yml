@@ -1,0 +1,55 @@
+name: "Secure Docker Build"
+description: "Build and scan Docker images with security best practices"
+author: "DevSecOps Team <team@company.com>"
+
+# Visual identity in marketplace
+branding:
+  icon: "shield"
+  color: "blue"
+
+# Clear input definition
+inputs:
+  dockerfile-path:
+    description: "Path to the Dockerfile"
+    required: true
+    default: "./Dockerfile"
+  image-name:
+    description: "Name for the built image"
+    required: true
+  registry-url:
+    description: "Container registry URL"
+    required: false
+    default: "ghcr.io"
+  security-scan:
+    description: "Enable security vulnerability scanning"
+    required: false
+    default: "true"
+  scan-severity:
+    description: "Minimum severity level for scan failures"
+    required: false
+    default: "HIGH"
+
+# Expected outputs
+outputs:
+  image-digest:
+    description: "SHA256 digest of the built image"
+  security-report:
+    description: "Path to security scan report"
+  image-size:
+    description: "Size of the built image in bytes"
+
+runs:
+  using: "composite"
+  steps:
+    - name: Build Docker image
+      shell: bash
+      run: |
+        docker build -f ${{ inputs.dockerfile-path }} -t ${{ inputs.image-name }} .
+        echo "image-digest=$(docker inspect --format='{{index .RepoDigests 0}}' ${{ inputs.image-name }})" >> $GITHUB_OUTPUT
+
+    - name: Security scan
+      if: inputs.security-scan == 'true'
+      shell: bash
+      run: |
+        # Security scanning logic
+        trivy image --severity ${{ inputs.scan-severity }} ${{ inputs.image-name }}

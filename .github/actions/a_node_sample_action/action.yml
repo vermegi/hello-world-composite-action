@@ -1,0 +1,26 @@
+name: 'Node action chain'
+description: 'A well-designed action chain for Node.js projects'
+runs:
+  using: "composite"
+  # Example of well-designed action chain
+  steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Setup Node.js with cache
+      uses: myorg/setup-node-with-cache@v2
+      with:
+        node-version: "20"
+
+    - name: Run security audit
+      uses: myorg/security-audit@v1
+
+    - name: Build and test
+      uses: myorg/build-and-test@v3
+      with:
+        test-command: "npm test"
+
+    - name: Upload coverage
+      uses: myorg/upload-coverage@v1
+      with:
+        coverage-file: "coverage/lcov.info"
