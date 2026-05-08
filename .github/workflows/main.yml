@@ -14,6 +14,10 @@ jobs:
         shell: bash
         env:
           RANDOM_NUMBER: ${{ steps.foo.outputs.random-number }}
+  hello_world_job2:
+    runs-on: ubuntu-latest
+    name: Another job to say hello
+    steps:
       # RUN LOCAL ACTION
       - id: bar
         uses: ./.github/actions/hello-world-composite-action
