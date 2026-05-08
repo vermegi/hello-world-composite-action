@@ -14,3 +14,12 @@ jobs:
         shell: bash
         env:
           RANDOM_NUMBER: ${{ steps.foo.outputs.random-number }}
+      # RUN LOCAL ACTION
+      - id: bar
+        uses: ./.github/actions/hello-world-composite-action
+        with:
+          who-to-greet: 'Gitte'
+      - run: echo random-number "$RANDOM_NUMBER"
+        shell: bash
+        env:
+          RANDOM_NUMBER: ${{ steps.bar.outputs.random-number }}
